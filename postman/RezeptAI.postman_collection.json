@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "your-collection-id",
+		"name": "RezeptAI",
+		"description": "API collection for RezeptAI application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "client_id",
+							"value": "rezeptai-client"
+						},
+						{
+							"key": "username",
+							"value": "testuser"
+						},
+						{
+							"key": "password",
+							"value": "test123"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/realms/ILV/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["realms", "ILV", "protocol", "openid-connect", "token"]
+				}
+			}
+		},
+		{
+			"name": "Get All Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/recipes",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "9090",
+					"path": ["api", "recipes"]
+				}
+			}
+		},
+		{
+			"name": "Get Recipe by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/recipes/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "9090",
+					"path": ["api", "recipes", "1"]
+				}
+			}
+		},
+		{
+			"name": "Get My Recipes",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9090/api/recipes/my",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "9090",
+					"path": ["api", "recipes", "my"]
+				}
+			}
+		},
+		{
+			"name": "Create Recipe",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Spaghetti Carbonara\",\n    \"description\": \"Classic Italian pasta dish\",\n    \"ingredients\": [\n        \"400g spaghetti\",\n        \"200g pancetta\",\n        \"4 eggs\",\n        \"100g parmesan\",\n        \"black pepper\"\n    ],\n    \"instructions\": \"1. Cook spaghetti...\",\n    \"preparationTime\": 15,\n    \"cookingTime\": 15,\n    \"servings\": 4\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/recipes",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "9090",
+					"path": ["api", "recipes"]
+				}
+			}
+		},
+		{
+			"name": "Update Recipe",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Updated Spaghetti Carbonara\",\n    \"description\": \"Updated description\",\n    \"ingredients\": [\n        \"400g spaghetti\",\n        \"200g pancetta\",\n        \"4 eggs\",\n        \"100g parmesan\",\n        \"black pepper\",\n        \"garlic\"\n    ],\n    \"instructions\": \"Updated instructions...\",\n    \"preparationTime\": 20,\n    \"cookingTime\": 15,\n    \"servings\": 4\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/recipes/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "9090",
+					"path": ["api", "recipes", "1"]
+				}
+			}
+		},
+		{
+			"name": "Delete Recipe",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9090/api/recipes/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "9090",
+					"path": ["api", "recipes", "1"]
+				}
+			}
+		}
+	]
+} 
