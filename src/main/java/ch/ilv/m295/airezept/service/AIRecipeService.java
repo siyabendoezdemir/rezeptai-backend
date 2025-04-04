@@ -19,12 +19,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Predicate;
+import org.springframework.transaction.annotation.Transactional;
+import ch.ilv.m295.airezept.entity.Recipe;
+import ch.ilv.m295.airezept.entity.RequestHistory;
+import ch.ilv.m295.airezept.repository.RequestHistoryRepository;
 
 @Service
 @RequiredArgsConstructor
 public class AIRecipeService {
     private static final Logger logger = LoggerFactory.getLogger(AIRecipeService.class);
     private final RecipeService recipeService;
+    private final RequestHistoryRepository requestHistoryRepository;
 
     @Value("${anthropic.api.key}")
     private String apiKey;
@@ -36,7 +41,8 @@ public class AIRecipeService {
             .build();
     }
 
-    public RecipeDto generateRecipe(String ingredientsOrIdea) {
+    @Transactional
+    public RecipeDto generateRecipe(String ingredientsOrIdea, String userId) {
         String prompt = """
             You are a recipe generator. Create a recipe based on the following input: %s
             
@@ -87,7 +93,20 @@ public class AIRecipeService {
         recipeJson = recipeJson.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
         
         try {
-            return parseRecipeJson(recipeJson);
+            RecipeDto recipeDto = parseRecipeJson(recipeJson);
+            
+            // Save the recipe
+            Recipe savedRecipe = recipeService.createRecipe(recipeDto, userId);
+            
+            // Save the request history
+            RequestHistory requestHistory = new RequestHistory();
+            requestHistory.setUserId(userId);
+            requestHistory.setUserInput(ingredientsOrIdea);
+            requestHistory.setAiResponse(recipeJson);
+            requestHistory.setGeneratedRecipe(savedRecipe);
+            requestHistoryRepository.save(requestHistory);
+            
+            return recipeDto;
         } catch (Exception e) {
             logger.error("Failed to parse AI response: {}", recipeJson, e);
             throw new RuntimeException("Failed to parse recipe from AI response. The response was not in the expected JSON format.", e);
