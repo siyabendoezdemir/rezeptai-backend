@@ -94,9 +94,11 @@ public class AIRecipeService {
         
         try {
             RecipeDto recipeDto = parseRecipeJson(recipeJson);
+            logger.info("Parsed recipe DTO: {}", recipeDto);
             
             // Save the recipe
             Recipe savedRecipe = recipeService.createRecipe(recipeDto, userId);
+            logger.info("Saved recipe to database with ID: {}", savedRecipe.getId());
             
             // Save the request history
             RequestHistory requestHistory = new RequestHistory();
@@ -105,7 +107,10 @@ public class AIRecipeService {
             requestHistory.setAiResponse(recipeJson);
             requestHistory.setGeneratedRecipe(savedRecipe);
             requestHistoryRepository.save(requestHistory);
+            logger.info("Saved request history with ID: {}", requestHistory.getId());
             
+            // Set the ID in the DTO before returning
+            recipeDto.setId(savedRecipe.getId());
             return recipeDto;
         } catch (Exception e) {
             logger.error("Failed to parse AI response: {}", recipeJson, e);
