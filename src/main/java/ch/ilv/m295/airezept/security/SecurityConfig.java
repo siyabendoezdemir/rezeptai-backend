@@ -28,7 +28,8 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/v3/api-docs",
-                    "/hello"
+                    "/hello",
+                    "/api/recipes"  // GET all recipes endpoint
                 ).permitAll()
                 .anyRequest().authenticated()
             )
