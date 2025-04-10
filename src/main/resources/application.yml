@@ -27,4 +27,10 @@ springdoc:
     operationsSorter: method
     tagsSorter: alpha
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    ch.ilv.m295.airezept: DEBUG
