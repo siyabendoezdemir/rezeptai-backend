@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class RecipeController {
 
     @PostMapping(consumes = "application/json")
     @Operation(summary = "Create a new recipe")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody RecipeDto recipeDto) {
         return new ResponseEntity<>(
                 recipeService.createRecipe(recipeDto, "test-user"),
@@ -55,6 +57,7 @@ public class RecipeController {
 
     @PutMapping(value = "/{id}", consumes = "application/json")
     @Operation(summary = "Update an existing recipe")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Recipe> updateRecipe(
             @PathVariable Long id,
             @Valid @RequestBody RecipeDto recipeDto) {
@@ -63,6 +66,7 @@ public class RecipeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a recipe")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id, "test-user");
         return ResponseEntity.noContent().build();
