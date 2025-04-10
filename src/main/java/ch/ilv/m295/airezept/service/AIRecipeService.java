@@ -55,8 +55,13 @@ public class AIRecipeService {
                     "Ingredient 2 with quantity"
                 ],
                 "instructions": [
-                    "Step 1 instruction",
-                    "Step 2 instruction"
+                    "### Step 1: Prepare Ingredients",
+                    "1. First instruction with **bold** for important steps",
+                    "2. Second instruction with *italics* for tips",
+                    "",
+                    "### Step 2: Cooking",
+                    "1. Third instruction",
+                    "2. Fourth instruction with `code` for exact measurements"
                 ],
                 "preparation_time": 15,
                 "cooking_time": 30,
@@ -67,10 +72,16 @@ public class AIRecipeService {
             1. Use only the fields shown above
             2. preparation_time and cooking_time should be numbers in minutes
             3. servings should be a number
-            4. ingredients and instructions should be arrays of strings
-            5. Do not include any additional fields or text
-            6. Do not include any markdown formatting or code block markers
-            7. The response must be valid JSON that can be parsed directly
+            4. ingredients should be an array of strings
+            5. instructions should be an array of strings with markdown formatting:
+               - Use ### for step headers
+               - Use **bold** for important steps
+               - Use *italics* for tips and notes
+               - Use `code` for exact measurements
+               - Use empty strings for spacing between sections
+            6. Do not include any additional fields or text
+            7. Do not include any markdown code block markers around the JSON
+            8. The response must be valid JSON that can be parsed directly
             """.formatted(ingredientsOrIdea);
 
         logger.info("Sending prompt to AI: {}", prompt);
@@ -145,6 +156,7 @@ public class AIRecipeService {
             });
             recipeDto.setIngredients(ingredients);
             
+            // Join instructions with newlines to preserve markdown formatting
             List<String> steps = new ArrayList<>();
             root.get("instructions").forEach(node -> {
                 if (!node.isTextual()) {
