@@ -87,7 +87,7 @@ public class AIRecipeService {
         logger.info("Sending prompt to AI: {}", prompt);
 
         MessageCreateParams params = MessageCreateParams.builder()
-            .maxTokens(1024L)
+            .maxTokens(2048L)
             .addUserMessage(prompt)
             .model(Model.CLAUDE_3_7_SONNET_LATEST)
             .build();

@@ -5,6 +5,8 @@ import ch.ilv.m295.airezept.entity.Recipe;
 import ch.ilv.m295.airezept.repository.RecipeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +17,8 @@ import java.util.List;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
 
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    public Page<Recipe> getAllRecipes(Pageable pageable) {
+        return recipeRepository.findAll(pageable);
     }
 
     public Recipe getRecipeById(Long id) {

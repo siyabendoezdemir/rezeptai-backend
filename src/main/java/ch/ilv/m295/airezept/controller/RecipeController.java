@@ -4,9 +4,13 @@ import ch.ilv.m295.airezept.dto.RecipeDto;
 import ch.ilv.m295.airezept.entity.Recipe;
 import ch.ilv.m295.airezept.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +26,17 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping
-    @Operation(summary = "Get all recipes")
-    public ResponseEntity<List<Recipe>> getAllRecipes() {
-        return ResponseEntity.ok(recipeService.getAllRecipes());
+    @Operation(summary = "Get all recipes with pagination")
+    public ResponseEntity<Page<Recipe>> getAllRecipes(
+            @Parameter(description = "Page number (0-based)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Sort field") @RequestParam(defaultValue = "createdAt") String sortBy,
+            @Parameter(description = "Sort direction (asc/desc)") @RequestParam(defaultValue = "desc") String direction) {
+        
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction.toLowerCase());
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        
+        return ResponseEntity.ok(recipeService.getAllRecipes(pageRequest));
     }
 
     @GetMapping("/{id}")
