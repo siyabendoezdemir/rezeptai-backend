@@ -82,6 +82,7 @@ public class AIRecipeService {
             6. Do not include any additional fields or text
             7. Do not include any markdown code block markers around the JSON
             8. The response must be valid JSON that can be parsed directly
+            9. Respond in the language language of the input
             """.formatted(ingredientsOrIdea);
 
         logger.info("Sending prompt to AI: {}", prompt);

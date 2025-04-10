@@ -2,11 +2,16 @@ package ch.ilv.m295.airezept.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
+@Table(name = "recipe")
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +26,7 @@ public class Recipe {
     @ElementCollection
     @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "ingredient")
-    private List<String> ingredients;
+    private List<String> ingredients = new ArrayList<>();
 
     @Column(columnDefinition = "TEXT")
     private String instructions;
@@ -33,9 +38,11 @@ public class Recipe {
     @Column(nullable = false)
     private String createdBy; // Keycloak user ID
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
