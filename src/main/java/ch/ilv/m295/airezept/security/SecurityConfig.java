@@ -36,7 +36,8 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/v3/api-docs",
                     "/hello",
-                    "/api/recipes"  // GET all recipes endpoint
+                    "/api/recipes",  // GET all recipes endpoint
+                    "/api/recipes/{id}"  // GET recipe by ID endpoint
                 ).permitAll()
                 .anyRequest().authenticated()
             )
