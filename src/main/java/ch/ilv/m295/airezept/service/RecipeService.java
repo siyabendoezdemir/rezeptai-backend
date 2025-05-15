@@ -2,7 +2,9 @@ package ch.ilv.m295.airezept.service;
 
 import ch.ilv.m295.airezept.dto.RecipeDto;
 import ch.ilv.m295.airezept.entity.Recipe;
+import ch.ilv.m295.airezept.entity.RequestHistory;
 import ch.ilv.m295.airezept.repository.RecipeRepository;
+import ch.ilv.m295.airezept.repository.RequestHistoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecipeService {
     private final RecipeRepository recipeRepository;
+    private final RequestHistoryRepository requestHistoryRepository;
 
     public Page<Recipe> getAllRecipes(Pageable pageable) {
         return recipeRepository.findAll(pageable);
@@ -51,9 +54,13 @@ public class RecipeService {
     @Transactional
     public void deleteRecipe(Long id, String userId) {
         Recipe recipe = getRecipeById(id);
-        if (!recipe.getCreatedBy().equals(userId)) {
-            throw new SecurityException("You can only delete your own recipes");
+
+        // Find and delete associated request history
+        List<RequestHistory> histories = requestHistoryRepository.findByGeneratedRecipe_Id(id);
+        if (histories != null && !histories.isEmpty()) {
+            requestHistoryRepository.deleteAll(histories);
         }
+
         recipeRepository.delete(recipe);
     }
 
